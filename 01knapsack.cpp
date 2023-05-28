@@ -1,77 +1,37 @@
-#include<iostream>
+#include <iostream>
+#include <string.h>
+#include <limits.h>
+
 using namespace std;
-void knapSack(int W, int weight[], int value[], int n)
-{   
-    
-    //  2-d array
-    int a[n + 1][W + 1];
 
-    // fill first row with all value zero
-    for (int i = 0; i <= W; i++)
-    {
-        a[0][i] = 0;
+int Knapsack(int W, int wt[], int val[], int n){
+    int i, j;
+    int dp[n+1][W+1];
+
+    for(int i=0; i<=W; i++){
+        dp[0][i]=0;
+    }
+    for(int i=0; i<=n; i++){
+        dp[i][0]=0;
     }
 
-    // fill first col with all value zero
-    for (int i = 0; i <= n; i++)
-    {
-        a[i][0] = 0;
-    }
-
-    //fill rest of the array with following logic
-    for(int i=1;i<=n;i++){
-        for(int j=1;j<=W;j++){
-            if(weight[i-1] > j)
-                a[i][j] = a[i-1][j];
-            else 
-                a[i][j] = max(value[i-1] + a[i-1][j - weight[i-1]], a[i-1][j]);    
+    for(int i=1; i<=n; i++){
+        for(int j=1; j<=W; j++){
+            if(wt[i-1]>j){
+                dp[i][j]=dp[i-1][j];
+            }
+            else{
+                dp[i][j]=max(val[i-1]+dp[i-1][j-wt[i-1]], dp[i-1][j]);
+            }
         }
     }
-    cout<<"Printing Matrix :"<<endl;
-    //printing array
-    for (int i = 0; i < n+1; i++)
-    {
-        for (int j = 0; j< W+1; j++)
-        {
-            cout<<a[i][j]<<" ";
-        }
-        cout<<endl;
-    }
-    cout<<"The Maximum Profit of knapsack is: "<<a[n][W];
-
-    
+    return dp[n][W];
 }
-int main()
-{
-    // Enter the numbers of items you want
-    int n ;
-    cout<<"Enter the numbers of items"<<endl;
-    cin>>n;
 
-
-    //Enter the capacity of knapsack  
-    int W ;
-    cout<<"Enter the Capacity of Knapsack"<<endl;
-    cin>>W;
-
-    // Enters the values 
-    int value[n];
-    cout<<"Enter the values"<<endl;
-    for (int i=0;i<n;i++){
-        cin>>value[i];
-
-    }
-
-    // Enter the weights
-    int weight[n];
-    cout<<"Enter the weights"<<endl;
-    for (int i=0;i<n;i++){
-        cin>>weight[i];
-
-    }
-    
-    
-    knapSack(W, weight, value, n);
-
-    return 0;
+int main(){
+    int val[] = {10, 40, 30, 50};
+    int wt[] = {5, 4, 6, 3};
+    int W = 10;
+    int n = 4;
+    cout << Knapsack(W, wt, val, n);
 }
