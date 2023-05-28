@@ -1,120 +1,38 @@
-#include<bits/stdc++.h>
+#include <iostream>
+#include <bits/stdc++.h>
+#include <cmath>
+#include <climits>
 using namespace std;
 
-//create struct for storing profit and weight
-struct item
-{
-    int profit,weight;
-
-    item(int profit,int weight){
-        this->profit=profit;
-        this->weight=weight; 
-    }
-};
-
-int cmppbyw(struct item x,struct item y){
-    float r1=(float)x.profit/(float)x.weight; // (float) used to convert int value to float
-    float r2=(float)y.profit/(float)y.weight;
+bool mycmp(pair<int, int> a, pair<int, int>b){
+    double r1= (double)a.first/a.second;
+    double r2=(double)b.first/b.second;
     return r1>r2;
 }
 
-float fractionalKnapsackpbyw(int w,struct item a[],int n){
-    sort(a,a+n,cmppbyw);
+double fracknap(int W, pair<int, int> arr[], int n){
+    sort(arr, arr+n, mycmp);
+    double res=0.0;
 
-    
-    float CurrentWeight=0;
-    float TotalProfit=0;
-    float RemainingWeight=0;
-
-    for(int i=0;i<=n;i++){
-        if(CurrentWeight + a[i].weight<=w){
-            
-            TotalProfit += a[i].profit;
-            
-            CurrentWeight += a[i].weight;
+    for(int i=0; i<n; i++){
+        if(arr[i].second<=W){
+            res+=arr[i].first;
+            W=W-arr[i].second;
         }
         else{
-            RemainingWeight=w-CurrentWeight;
-
-            TotalProfit+=RemainingWeight*((float)a[i].profit/(float)a[i].weight);
+            res+=arr[i].first * ((double)W/arr[i].second);
             break;
         }
-        
     }
-    return TotalProfit;
-}
-
-float cmpbyweight(struct item x,struct item y){
-    float r1=x.weight;
-    float r2=y.weight;
-    return r2>r1;
-}
-
-float fractionalKnapsackbyweight(int w,struct item a[],int n){
-    sort(a,a+n,cmpbyweight);
-
-    
-    float CurrentWeight=0;
-    float TotalProfit=0;
-    float RemainingWeight=0;
-
-    for(int i=0;i<=n;i++){
-        if(CurrentWeight + a[i].weight<=w){
-            
-            TotalProfit += a[i].profit;
-            
-            CurrentWeight += a[i].weight;
-        }
-        else{
-            RemainingWeight=w-CurrentWeight;
-
-            TotalProfit+=RemainingWeight*((float)a[i].profit/(float)a[i].weight);
-            break;
-        }
-        
-    }
-    return TotalProfit;
-}
-float cmpbyprofit(struct item x,struct item y){
-    float r1=x.profit;
-    float r2=y.profit;
-    return r1>r2;
-}
-
-float fractionalKnapsackbyprofit(int w,struct item a[],int n){
-    sort(a,a+n,cmpbyprofit);
-
-    
-    float CurrentWeight=0;
-    float TotalProfit=0;
-    float RemainingWeight=0;
-
-    for(int i=0;i<=n;i++){
-        if(CurrentWeight + a[i].weight<=w){
-            
-            TotalProfit += a[i].profit;
-            
-            CurrentWeight += a[i].weight;
-        }
-        else{
-            RemainingWeight=w-CurrentWeight;
-
-            TotalProfit+=RemainingWeight*((float)a[i].profit/(float)a[i].weight);
-            break;
-        }
-        
-    }
-    return TotalProfit;
+    return res;
 }
 
 int main(){
-    int w=25;
-    item a[]={{24,24},{18,10},{18,10},{10,7}};
+    int n=3; 
+    int W=50;
 
-    int n=sizeof(a)/sizeof(a[0]);  
+    pair<int, int> arr[] = {make_pair(120, 30), make_pair(100, 20), make_pair(60,10)};
 
-    cout<<fractionalKnapsackpbyw(w,a,n)<<endl;
-    cout<<fractionalKnapsackbyweight(w,a,n)<<endl;
-    cout<<fractionalKnapsackbyprofit(w,a,n)<<endl;
-    
+    cout<<fracknap(W, arr, n);
+    return 0;
 }
