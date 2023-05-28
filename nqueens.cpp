@@ -1,99 +1,64 @@
-#include<iostream>
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
- 
-bool isSafe(int** board,int x,int y,int n) //x is for row, y is for column and n is number of queens
-{                                          //int** is double pointer in stack 
-    //Checking if there is any safe position in columns else return false
-    for(int row=0;row<x;row++)
-    {
-        if(board[row][y]==1)
-        {
-            return false;
+
+#define N 4
+int board[N][N];
+
+void printboard(int board[N][N]){
+    for(int i=0; i<N; i++){
+        for(int j=0; j<N; j++){
+            printf(" %d ", board[i][j]);
         }
+        printf("\n");
     }
-
-    int row=x; //iterators
-    int col=y;
-
-    //Checking if there is any safe position in left upper diagonal else return false
-    while(row>=0 && col>=0)
-    {
-        if(board[row][col]==1)
-        {
-            return false;
-        }
-        row--;
-        col--; 
-    }
-
-    row=x;
-    col=y;
-
-    //Checking if there is any safe position in right upper diagonal else return false
-    while(row>=0 && col<n)
-    {
-        if(board[row][col]==1)
-        {
-            return false;
-        }
-        row--;
-        col++; 
-    }
-    return true;   //Finally return true if positions are safe
 }
 
-bool nQueen(int** board,int x,int n)
-{
-    if(x>=n)
-    {
-        return true;      //n queens are placed
+bool isSafe(int row, int col){
+    for(int i=0; i<N; i++)
+        if(board[row][i])
+            return false;
+    
+    for(int i=row, j=col; i>=0 && j>=0; i--, j--){
+        if(board[i][j])
+            return false;
     }
-    //we are checking our safe positions for columns
-    for(int col=0;col<n;col++)   //new col variable
-    {
-        if(isSafe(board,x,col,n))   //If isSafe() returning true place queen
-        {
-            board[x][col]=1;        //Queen is placed on board
 
-            if(nQueen(board,x+1,n)) //Recursive call
-            {
+    for(int i=row, j=col; j>=0 && i<N; i++, j--){
+        if(board[i][j])
+            return false;
+    }
+
+    return true;
+}
+
+bool solveRec(int col){
+    if(col==N)
+        return true;
+
+    for(int i=0; i<N; i++){
+        if(isSafe(i, col)){
+            board[i][col]=1;
+
+            if(solveRec(col+1))
                 return true;
-            }
-            board[x][col]=0;    //Backtracking
+            board[i][col]=0;
+            
         }
     }
     return false;
 }
 
-int main()
-{
-    int n;
-    cout<<"Enter Number of queens: "<<endl; 
-    cin>>n;
-
-    int** board=new int*[n];      //Board of n*n
-
-    for(int i=0;i<n;i++)
-    {
-        board[i]=new int[n];
-        for(int j=0;j<n;j++)
-        {
-            board[i][j]=0;    //Initialise board with 0
-        }
+bool solve(){
+    if(solveRec(0)==false){
+        printf("no solution");
+        return false;
     }
 
-    //Calling nQueen() function
-    if(nQueen(board,0,n))
-    {
-        for(int i=0;i<n;i++)     //Printing board(n*n)
-        {
-            for(int j=0;j<n;j++)
-            {
-                cout<<board[i][j]<<" ";   //If 1 is present that means
-            }                             //there is queen placed
-            cout<<endl;
-        }
-    }
+    printboard(board);
+    return true;
+}
+
+int main(){
+    solve();
     return 0;
 }
