@@ -1,64 +1,74 @@
-#include <bits/stdc++.h>
+#include<iostream>
 using namespace std;
-
-#define N 4
-int board[N][N];
-
-void printboard(int board[N][N]){
-    for(int i=0; i<N; i++){
-        for(int j=0; j<N; j++){
-            printf(" %d ", board[i][j]);
+int board[10][10];
+void print(int n) {
+    for (int i = 0;i <= n-1; i++) {
+        for (int j = 0;j <= n-1; j++) {
+           
+                cout <<board[i][j]<< " ";
+           
         }
-        printf("\n");
+        cout<<endl;
     }
+    cout<<endl;
+    cout<<endl;
 }
 
-bool isSafe(int row, int col){
-    for(int i=0; i<N; i++)
-        if(board[row][i])
+bool isSafe(int col, int row, int n) {
+  //check for same column
+    for (int i = 0; i < row; i++) {
+        if (board[i][col]) {
             return false;
-    
-    for(int i=row, j=col; i>=0 && j>=0; i--, j--){
-        if(board[i][j])
-            return false;
+        }
     }
-
-    for(int i=row, j=col; j>=0 && i<N; i++, j--){
-        if(board[i][j])
+    //check for upper left diagonal
+    for (int i = row,j = col;i >= 0 && j >= 0; i--,j--) {
+        if (board[i][j]) {
             return false;
+        }
     }
-
+    //check for upper right diagonal
+    for (int i = row, j = col; i >= 0 && j < n; j++, i--) {
+        if (board[i][j]) {
+            return false;
+        }
+    }
     return true;
 }
-
-bool solveRec(int col){
-    if(col==N)
+//find the position for each queen
+bool solve (int n, int row) {
+    if (n == row) {
+        print(n);
         return true;
-
-    for(int i=0; i<N; i++){
-        if(isSafe(i, col)){
-            board[i][col]=1;
-
-            if(solveRec(col+1))
-                return true;
-            board[i][col]=0;
-            
+    }
+   
+    bool res = false;
+    for (int i = 0;i <=n-1;i++) {
+        if (isSafe(i, row, n)) {
+            board[row][i] = 1;
+            res = solve(n, row+1) || res;
+           
+            board[row][i] = 0;
         }
     }
-    return false;
+    return res;
 }
 
-bool solve(){
-    if(solveRec(0)==false){
-        printf("no solution");
-        return false;
-    }
-
-    printboard(board);
-    return true;
-}
-
-int main(){
-    solve();
-    return 0;
+int main()
+{
+        int n;
+        cout<<"Enter the number of queen"<<endl;
+        cin >> n;
+        for (int i = 0;i < n;i++) {
+            for (int j = 0;j < n;j++) {
+                board[i][j] = 0;
+            }
+        }
+        bool res = solve(n, 0);
+        if(res == false) {
+            cout << -1 << endl; //if there is no possible solution
+        } else {
+            cout << endl;
+        }
+  return 0;
 }
